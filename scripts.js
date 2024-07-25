@@ -126,7 +126,7 @@ function initializeTable() {
 }
 
 function populateFooter(captureDate) {
-    const footerElement = document.getElementById('footer'); // Replace 'footer' with your footer element's ID
+    const footerElement = document.getElementById('footer');
     if (footerElement) {
         const formattedDate = formatDate(captureDate);
         const relativeTime = getRelativeTime(captureDate);
