@@ -119,7 +119,7 @@ function initializeTable() {
             populateFooter(data['capture_date']);
             columnOrder = createColumnOrder(jsonData);
             generateTable(jsonData);
-            const initsortcol = getAllColumns()[3];
+            const initsortcol = getAllColumns()[2];
             sortTable(initsortcol);
         })
         .catch(error => console.error('Error loading the JSON data:', error));
