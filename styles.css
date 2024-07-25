@@ -1,0 +1,119 @@
+/* Color Variables */
+:root {
+    --background: #1E1E2E;
+    --black: #45475A;
+    --blue: #89B4FA;
+    --brightBlack: #585B70;
+    --brightBlue: #89B4FA;
+    --brightCyan: #94E2D5;
+    --brightGreen: #A6E3A1;
+    --brightPurple: #F5C2E7;
+    --brightRed: #F38BA8;
+    --brightWhite: #A6ADC8;
+    --brightYellow: #F9E2AF;
+    --cursorColor: #F5E0DC;
+    --cyan: #94E2D5;
+    --foreground: #CDD6F4;
+    --green: #A6E3A1;
+    --purple: #F5C2E7;
+    --red: #F38BA8;
+    --selectionBackground: #585B70;
+    --white: #BAC2DE;
+    --yellow: #F9E2AF;
+}
+
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--background); /* Dark background color */
+    color: var(--foreground); /* Light text color for contrast */
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    box-sizing: border-box; /* Include padding and border in width and height */
+}
+
+/* Container */
+.container {
+    margin: 20px auto; /* Center the container with some margin */
+    max-width: 90%; /* Max width for better readability on large screens */
+    padding: 20px; /* Add some padding */
+    background-color: var(--black); /* Slightly lighter background for content area */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
+    overflow-x: auto; /* Add horizontal scroll if needed */
+    box-sizing: border-box; /* Include padding and border in width and height */
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto; /* Ensure table adjusts to content */
+}
+
+th, td {
+    padding: 12px; /* Slightly more padding for better readability */
+    text-align: left;
+    border: 1px solid var(--brightBlack); /* Darker border for contrast */
+    min-width: 4.5em;
+    box-sizing: border-box; /* Include padding and border in width */
+}
+
+th {
+    background-color: var(--black); /* Darker background for headers */
+    color: var(--white); /* Light text color */
+    border: 1px solid var(--brightWhite);
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+}
+
+th:hover {
+    background-color: var(--brightBlack); /* Slightly lighter on hover */
+}
+
+th.ascending::after {
+    content: " ▲";
+    position: absolute;
+    right: 3px;
+    top: 50%;
+    transform: translateY(-50%); /* Center the symbol vertically */
+}
+
+th.descending::after {
+    content: " ▼";
+    position: absolute;
+    right: 3px;
+    top: 50%;
+    transform: translateY(-50%); /* Center the symbol vertically */
+}
+
+/* Link Styling */
+a {
+    color: var(--blue); /* Change link color to a readable blue */
+    text-decoration: none; /* Remove underline for a cleaner look */
+}
+
+a:hover, a:focus {
+    color: var(--brightBlue); /* Slightly lighter blue on hover */
+    text-decoration: underline; /* Add underline on hover for better UX */
+}
+
+/* Footer Styling */
+footer {
+    background-color: var(--background); /* Dark background color */
+    color: var(--white); /* White text color */
+    text-align: center; /* Center align text */
+    padding: 20px; /* Add padding around the text */
+    font-size: 16px; /* Set font size */
+    border-top: 1px solid var(--brightBlack); /* Add a border on top */
+    width: 100%;
+    margin-top: auto;
+    box-sizing: border-box; /* Include padding and border in width and height */
+}
+
+footer p {
+    margin: 0; /* Remove default margin from paragraphs */
+    line-height: 1.5; /* Improve line spacing */
+}
