@@ -106,7 +106,7 @@ function updateHeaderClasses() {
     tableHeader.querySelectorAll('th').forEach(th => {
         th.classList.remove('ascending', 'descending');
         if (th.getAttribute('data-column') === currentSortColumn) {
-            th.classList.add(isAscending ? 'ascending' : 'descending');
+            th.classList.add(isAscending ? 'descending' : 'ascending');
         }
     });
 }
