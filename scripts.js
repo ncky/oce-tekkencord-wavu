@@ -1,9 +1,13 @@
 // scripts.js
 
-let currentSortColumn = null;
-let isAscending = true;
-let jsonData = [];
-let columnOrder = [];
+let currentSortColumn1 = null;
+let currentSortColumn2 = null;
+let isAscending1 = true;
+let isAscending2 = true;
+let jsonData1 = [];
+let jsonData2 = [];
+let columnOrder1 = [];
+let columnOrder2 = [];
 
 function createColumnOrder(data) {
     const order = [];
@@ -17,23 +21,23 @@ function createColumnOrder(data) {
     return order;
 }
 
-function getAllColumns() {
+function getAllColumns(columnOrder) {
     return columnOrder;
 }
 
-function generateTable(data) {
-    const tableHeader = document.getElementById('tableHeader');
-    const tableBody = document.getElementById('tableBody');
+function generateTable(data, tableId, columnOrder) {
+    const tableHeader = document.getElementById(`tableHeader${tableId}`);
+    const tableBody = document.getElementById(`tableBody${tableId}`);
 
     tableHeader.innerHTML = '';
     tableBody.innerHTML = '';
 
-    const headers = getAllColumns();
+    const headers = getAllColumns(columnOrder);
     headers.forEach(header => {
         const th = document.createElement('th');
         th.textContent = header;
         th.setAttribute('data-column', header);
-        th.onclick = () => sortTable(header);
+        th.onclick = () => sortTable(header, tableId);
         tableHeader.appendChild(th);
     });
 
@@ -46,7 +50,7 @@ function generateTable(data) {
                     const a = document.createElement('a');
                     a.href = item[header + '_HREF'];
                     a.textContent = item[header];
-                    a.target = '_blank'; // Open link in new tab
+                    a.target = '_blank';
                     td.appendChild(a);
                 } else {
                     td.textContent = item[header];
@@ -57,7 +61,7 @@ function generateTable(data) {
         tableBody.appendChild(tr);
     });
 
-    updateHeaderClasses();
+    updateHeaderClasses(tableId);
 }
 
 function extractNumber(value) {
@@ -69,15 +73,27 @@ function extractNumber(value) {
     return isNaN(value) ? NaN : Number(value);
 }
 
-function sortTable(column) {
+function sortTable(column, tableId) {
+    const jsonData = tableId === 1 ? jsonData1 : jsonData2;
     let sortedData = [...jsonData];
 
-    if (currentSortColumn === column) {
-        isAscending = !isAscending;
+    if (tableId === 1) {
+        if (currentSortColumn1 === column) {
+            isAscending1 = !isAscending1;
+        } else {
+            currentSortColumn1 = column;
+            isAscending1 = true;
+        }
     } else {
-        currentSortColumn = column;
-        isAscending = true;
+        if (currentSortColumn2 === column) {
+            isAscending2 = !isAscending2;
+        } else {
+            currentSortColumn2 = column;
+            isAscending2 = true;
+        }
     }
+
+    const isAscending = tableId === 1 ? isAscending1 : isAscending2;
 
     sortedData.sort((a, b) => {
         const aValue = extractNumber(a[column]);
@@ -97,12 +113,16 @@ function sortTable(column) {
         return 0;
     });
 
-    generateTable(sortedData);
+    generateTable(sortedData, tableId, tableId === 1 ? columnOrder1 : columnOrder2);
 }
 
 
-function updateHeaderClasses() {
-    const tableHeader = document.getElementById('tableHeader');
+
+function updateHeaderClasses(tableId) {
+    const tableHeader = document.getElementById(`tableHeader${tableId}`);
+    const currentSortColumn = tableId === 1 ? currentSortColumn1 : currentSortColumn2;
+    const isAscending = tableId === 1 ? isAscending1 : isAscending2;
+
     tableHeader.querySelectorAll('th').forEach(th => {
         th.classList.remove('ascending', 'descending');
         if (th.getAttribute('data-column') === currentSortColumn) {
@@ -111,18 +131,23 @@ function updateHeaderClasses() {
     });
 }
 
-function initializeTable() {
-    fetch('./data.json')
-        .then(response => response.json())
-        .then(data => {
-            jsonData = data['entries'];
-            populateFooter(data['capture_date']);
-            columnOrder = createColumnOrder(jsonData);
-            generateTable(jsonData);
-            const initsortcol = getAllColumns()[2];
-            sortTable(initsortcol);
-        })
-        .catch(error => console.error('Error loading the JSON data:', error));
+function initializeTables() {
+    Promise.all([
+        fetch('./data.json').then(response => response.json()),
+        fetch('./data2.json').then(response => response.json())
+    ])
+    .then(([data1, data2]) => {
+        jsonData1 = data1['entries'];
+        jsonData2 = data2['entries'];
+        populateFooter(data1['capture_date']);
+        columnOrder1 = createColumnOrder(jsonData1);
+        columnOrder2 = createColumnOrder(jsonData2);
+        generateTable(jsonData1, 1, columnOrder1);
+        generateTable(jsonData2, 2, columnOrder2);
+        sortTable(getAllColumns(columnOrder1)[2], 1); //sort by last 2 weeks played
+        sortTable(getAllColumns(columnOrder2)[1], 2); //sort by overall stats
+    })
+    .catch(error => console.error('Error loading the JSON data:', error));
 }
 
 function populateFooter(captureDate) {
@@ -159,4 +184,21 @@ function getRelativeTime(dateString) {
     }
 }
 
-initializeTable();
+function openTab(evt, tabName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
+initializeTables();
+
+// Open the default tab
+document.getElementById("defaultOpen").click();
